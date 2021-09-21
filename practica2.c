@@ -20,45 +20,47 @@ Pasos:
 #include "utils.h"
 
 // ====== GLOBALES ======
-#define CLAVE 4
+#define CLAVE 5
 int rows = CLAVE;
 int columns, orgStrLen, totalChars, orgStrLen;
-char *_tempString;
+char tempString[50];
+char _encodedString[50];
+char _decodedString[50];
 
 
-void _encodeString(char *originalString, char **encodedString);
+void _encodeString(char *originalString, char **encodedString, char *testString);
 void _decodeString(char *encodedString, char **decodedString);
 
 int main(void){
     char *originalString;
     char *encodedString;
+    char *testString;
     char *decodedString;
-
+    int x;
     initUtils();
-    printf("Text: ");
-    originalString = getString();
+    for (x = 0; x < 5; x++){
+      printf("Text: ");
+      originalString = getString();
 
-    orgStrLen = strlen(originalString);
-    columns = orgStrLen / rows;
-    if(orgStrLen % rows){
-      columns++;
+      orgStrLen = strlen(originalString);
+      columns = orgStrLen / rows;
+      if(orgStrLen % rows){
+        columns++;
+      }
+      totalChars = columns * rows;
+
+      _encodeString(originalString, &encodedString, testString);
+      printf("Encoded: %s\n",_encodedString);
+      _decodeString(encodedString, &decodedString);
+      printf("Decoded: %s\n",_decodedString);
+      displayEnd();
     }
-    totalChars = columns * rows;
 
-    _encodeString(originalString, &encodedString);
-    printf("encodedString: %s\n",encodedString);
-    printf("encodedString: %p\n",encodedString);
-    printf("encodedString: %p\n",&encodedString);
-    _tempString = encodedString;
-    _decodeString(encodedString, &decodedString); // ! Send correct encodedString
-    printf("\n\nDecoded: %s\n",decodedString);
-    displayEnd();
     return 0;
 }
 
 
-void _encodeString(char *originalString, char **encodedString){
-  char tempString[totalChars + 1];
+void _encodeString(char *originalString, char **encodedString, char *testString){
   char matrix[rows][columns];
   int row, column, i, j, k = 0;
   
@@ -77,45 +79,25 @@ void _encodeString(char *originalString, char **encodedString){
   for (i = 0; i < rows; i++){
     for (j = 0; j < columns; j++, k++){
       printf("%c ",matrix[i][j]);
-      tempString[k] = matrix[i][j];
+      _encodedString[k] = matrix[i][j];
     }
     printf ("\n");
   }
-  tempString[k] = '\0';
-  *encodedString = tempString;
-  //encodedString = tempString;
-  printf("tempString: %s\n",tempString);
-  printf("tempString: %p\n",&tempString);
-  printf("encodedString: %s\n",encodedString);
-  printf("encodedString: %p\n",encodedString);
-  printf("encodedString: %p\n",&encodedString);
-  printf(" === BACK TO MAIN === \n");
+  _encodedString[k] = '\0';
+  *encodedString = _encodedString;
 }
 
-void _decodeString(char *encodedString, char **decodedString){ // ! Update params with correct econdedString data type
-  char *encString = "hsoXlXaX"; // ! Remove 
+void _decodeString(char *encodedString, char **decodedString){
   char tempString[totalChars + 1];
   char matrix[rows][columns];
   int row, column, rslt, i, j, k = 0;
-  //printf("\nHERE 1: %s\n",encString);
-  printf(" === ON DECODE FUNCTION === \n");
-  printf("encodedString: %s\n",encodedString); // ! Recieve correct econdedString
-  printf("encodedString: %p\n",encodedString); // ! Recieve correct econdedString
-  printf("encodedString: %p\n",&encodedString); // ! Recieve correct econdedString
-
-  printf("_tempString: %s\n",_tempString); // ! Recieve correct econdedString
-  printf("_tempString: %p\n",_tempString); // ! Recieve correct econdedString
-  printf("_tempString: %p\n",&_tempString); // ! Recieve correct econdedString
-  printf(" === BACK TO MAIN === \n");
-
   //  De-form encodedString to obtain decodedString 
   for (i = 0; i < columns; i++){
     for (j = 0; j < rows; j++, k++){
-      rslt = i + (j * 2);
-      tempString[k] = encString[rslt];
-      // ! tempString[k] = encodedString[rslt];
+      rslt = i + (j * columns);
+      _decodedString[k] = encodedString[rslt];
     }
   }
-  tempString[k] = '\0';  
-  *decodedString = tempString;
+  _decodedString[k] = '\0';  
+  *decodedString = _decodedString;
 }
